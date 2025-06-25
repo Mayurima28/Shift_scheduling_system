@@ -47,7 +47,7 @@ CREATE TABLE employee_availability (
 	-- FOREIGN KEY (name) REFERENCES employees(name)
 );
 --
-========================================
+-- ========================================
 -- 5. LEAVE MANAGEMENT
 -- ========================================
 

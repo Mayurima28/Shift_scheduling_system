@@ -1,3 +1,5 @@
+-- ========================================
+-- 1. AUTOMATIC ID GENERATION -- ========================================
 CREATE TABLE id_counters (
     id_type VARCHAR(50) PRIMARY KEY, -- e.g., 'employee', 'shift'
     last_number INT NOT NULL
@@ -19,8 +21,7 @@ CREATE TABLE employees (
     status ENUM('active', 'inactive') DEFAULT 'active',
     CONSTRAINT unique_name_phone UNIQUE(name,phone)
 );
--- ALTER TABLE employees ADD CONSTRAINT unique_name_phone UNIQUE(name,phone);
--- ALTER TABLE employees MODIFY COLUMN phone VARCHAR(10);
+
 
 -- ========================================
 -- 3. SHIFT MANAGEMENT (Custom ID)
@@ -45,9 +46,8 @@ CREATE TABLE employee_availability (
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 	-- FOREIGN KEY (name) REFERENCES employees(name)
 );
--- ALTER TABLE employee_availability ADD name VARCHAR(100) NOT NULL;
-
--- ========================================
+--
+========================================
 -- 5. LEAVE MANAGEMENT
 -- ========================================
 
@@ -76,10 +76,6 @@ CREATE TABLE shift_assignments (
     FOREIGN KEY (shift_id) REFERENCES shifts(shift_id),
     CONSTRAINT unique_shift_per_day UNIQUE (employee_id, shift_date)
 );
--- DROP TABLE shift_assignments;
--- SHOW CREATE TABLE shift_assignments;
--- ALTER TABLE shift_assignments DROP FOREIGN KEY shift_assignments_ibfk_2;
--- ALTER TABLE shift_assignments ADD CONSTRAINT shift_assignments_ibfk_2 FOREIGN KEY (name) REFERENCES employees(name) ON DELETE NO ACTION;
 -- ========================================
 -- 7. SHIFT SWAP REQUESTS
 -- ========================================
@@ -95,12 +91,6 @@ CREATE TABLE shift_swap_requests (
     FOREIGN KEY (requester_id) REFERENCES employees(employee_id),
     FOREIGN KEY (requested_with_id) REFERENCES employees(employee_id)
 );
--- DROP TABLE shift_swap_requests;
--- SHOW CREATE TABLE shift_swap_requests;
--- ALTER TABLE shift_swap_requests DROP FOREIGN KEY shift_swap_requests_ibfk_2;
--- ALTER TABLE shift_swap_requests DROP FOREIGN KEY shift_swap_requests_ibfk_4;
--- ALTER TABLE shift_swap_requests ADD CONSTRAINT shift_swap_requests_ibfk_2 FOREIGN KEY (requester_name) REFERENCES employees(name) ON DELETE NO ACTION;
--- ALTER TABLE shift_swap_requests ADD CONSTRAINT shift_swap_requests_ibfk_4 FOREIGN KEY (requested_with_name) REFERENCES employees(name) ON DELETE NO ACTION;
 -- ========================================
 -- 8. AUDIT LOGS
 -- ========================================
@@ -118,7 +108,6 @@ CREATE TABLE audit_log (
 -- ========================================
 -- 9. ROBUST TRIGGERS FOR VALIDATION
 -- ========================================
--- DROP PROCEDURE IF EXISTS trg_validate_shift_assignment;
 DELIMITER $$
 
 CREATE TRIGGER trg_validate_shift_assignment
@@ -222,7 +211,6 @@ BEGIN
 END $$
 
 -- Auto Assign by Role & Availability
--- DROP PROCEDURE IF EXISTS auto_assign_shift;
 DELIMITER $$
 CREATE PROCEDURE auto_assign_shift (
     IN shift_id_input VARCHAR(10),
